@@ -15,7 +15,7 @@ export NCDIR=$LIBBASE
 export ZLIB=$LIBBASE
 export HDF5=$LIBBASE
 export JASPER=$LIBBASE
-
+export PHDF5=$LIBBASE
 ```
 
 **FIrts, whe need MPI libraries**
@@ -223,6 +223,7 @@ and wrf em core
 
 export WRF_EM_CORE=1
 export PHDF5=$HDF5
+export NETCDF=$LIBBASE
 ```
 and edit the default config to eneable Jasper
 
@@ -321,6 +322,7 @@ wget https://github.com/wrf-model/WPS/archive/v4.1.tar.gz
 tar xvzf v4.1.tar.gz
 cd WPS-4.1
 ./clean
+ export WRF_DIR=$HOME/WRF-4.1.2
 
 The next step is to configure WPS, however, you first need to set some paths for the ungrib libraries and then you can configure.
 ./configure
