@@ -29,7 +29,7 @@ garantía; ni siquiera para MERCANTIBILIDAD o IDONEIDAD PARA UN PROPÓSITO EN
 PARTICULAR
 ```
 
-** And also curl libs ***
+**And also curl libs***
 
 git clone https://github.com/curl/curl.git
 cd curl
@@ -95,7 +95,6 @@ $ cd ..
 wget -nc https://github.com/Unidata/netcdf-c/archive/v4.7.2.tar.gz
 tar xzvf v4.7.2.tar.gz
 cd netcdf-c-4.7.2
-export LIBS="  -lz -lcurl -lmpi"
 export CC=$MPI_CC
 
 export LDFLAGS="-L${LIBBASE}/lib -fopenmp -fPIC"
@@ -106,7 +105,7 @@ export FFLAGS=$CFLAGS
 export FCFLAGS=$CFLAGS
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${LIBBASE}/lib
 
-./configure --prefix=$NCDIR --disable-shared --enable-parallel-tests --enable-netcdf4 --disable-filter-testing
+./configure --prefix=$NCDIR --disable-shared --enable-parallel-tests --enable-netcdf4 --disable-filter-testing --disable-dap
 make check
 make install
 export NETCDF=${LIBBASE}
@@ -127,6 +126,8 @@ make check
 make install
 cd ..
 ```
+
+CPPFLAGS="-I${NCDIR}/include" LDFLAGS="-L${NCDIR}/lib" LD_LIBRARY_PATH=${NCDIR}/lib LIBS="-lnetcdf -lhdf5_hl -lhdf5 -lz" ./configure --disable-shared  --enable-parallel-tests --prefix=${NCDIR}
 
 **JASPER**
 Configuring JasPer: This is a compression library necessary for compiling WPS (specifically ungrib) with GRIB2 capability.
@@ -150,7 +151,7 @@ Assuming all the **export** commands from the NetCDF install are already set, yo
 wget -nc http://www2.mmm.ucar.edu/wrf/OnLineTutorial/compile_tutorial/tar_files/libpng-1.2.50.tar.gz
 tar xvzf libpng-1.2.50.tar.gz 
 cd libpng-1.2.50/
-./configure --prefix=$LIBBASE/jasper
+./configure --prefix=$LIBBASEm
 make
 make install
 cd ..
