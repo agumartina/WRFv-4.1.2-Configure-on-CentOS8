@@ -1,7 +1,103 @@
 # WRFv-4.1.2-Configure-on-CentOS8
 Configuration of WRF 4.1 on CenOS
+These are some installation notes taken in the process of installing WRF version 4.1.2 on a computer with CentOS 8.
 
-## Librarties and dependences
+
+## Install required software
+
+
+```console
+$sudo yum groupinstall 'Development Tools'
+$ sudo yum install csh gfortran m4
+```
+
+## System environment tests
+
+First and foremost, it is very important to have a gfortran compiler, as well as gcc and cpp. If you have these installed, you should be given a path for the location of each.
+```console
+$ which gfortran
+/user/bin/gfortran
+$ which cpp
+/user/bin/cpp
+$ which gcc
+/user/bin/gcc
+```
+
+Check your gcc version. It is recommend using version 4.4.0 or later.
+```console
+$ gcc --version
+gcc (GCC) 8.2.1 20180905 (Red Hat 8.2.1-3)
+Copyright (C) 2018 Free Software Foundation, Inc.
+Esto es software libre; vea el código para las condiciones de copia.  NO hay
+garantía; ni siquiera para MERCANTIBILIDAD o IDONEIDAD PARA UN PROPÓSITO EN
+PARTICULAR
+```
+
+Create a new, clean directory called `source`, `wrf_io`, `wrfout`, `salidas_wrf`, `GFS025` and another one called `TESTS`.
+
+There are a few simple tests that can be run to verify that the fortran compiler is built properly, and that it is compatible with the C compiler. Download the tar file that contains the tests into the `TESTS` directory and unpack the tar file.
+```console
+$ cd ~/TESTS
+$ wget http://www2.mmm.ucar.edu/wrf/OnLineTutorial/compile_tutorial/tar_files/Fortran_C_tests.tar
+$ tar -xvf Fortran_C_tests.tar
+```
+
+There are 7 tests available, so start at the top and run through them, one at a time.
+
+* Test 1: Fixed Format Fortran Test.
+```console
+$ gfortran TEST_1_fortran_only_fixed.f
+$ ./a.out
+SUCCESS test 1 fortran only fixed format
+```
+
+* Test 2: Free Format Fortran.
+```console
+$ gfortran TEST_2_fortran_only_free.f90
+$ ./a.out
+Assume Fortran 2003: has FLUSH, ALLOCATABLE, derived type, and ISO C Binding
+SUCCESS test 2 fortran only free format
+```
+
+* Test 3: C.
+```console
+$ gcc TEST_3_c_only.c
+$ ./a.out
+SUCCESS test 3 c only
+```
+
+* Test 4: Fortran Calling a C Function (our gcc and gfortran have different defaults, so we force both to always use 64 bit [-m64] when combining them).
+```console
+$ gcc -c -m64 TEST_4_fortran+c_c.c
+$ gfortran -c -m64 TEST_4_fortran+c_f.f90
+$ gfortran -m64 TEST_4_fortran+c_f.o TEST_4_fortran+c_c.o
+$ ./a.out
+C function called by Fortran Values are xx = 2.00 and ii = 1
+SUCCESS test 4 fortran calling c
+```
+
+In addition to the compilers required to manufacture the WRF executables, the WRF build system has scripts as the top level for the user interface. The WRF scripting system uses, and therefore is necessary having csh, perl and sh.
+To test whether these scripting languages are working properly on the system, there are 3 tests to run. These tests were included in the "Fortran and C Tests Tar File".
+
+* Test 5: csh.
+```console
+$ csh ./TEST_csh.csh
+SUCCESS csh test
+```
+
+* Test 6: perl.
+```console
+$ ./TEST_perl.pl
+SUCCESS perl test
+```
+
+* Test 7: sh.
+```console
+$ ./TEST_sh.sh
+SUCCESS sh test
+```
+
+## Build Librarties and dependences
 
 **We need to set where to find sources for libraries**
 ```console
@@ -11,34 +107,32 @@ mkdir -p $LIBSRC
 export LIBBASE=$HOME/wrf_io
 mkdir -p $LIBBASE
 
-export NCDIR=$LIBBASE
+export NETCDF=$LIBBASE
 export ZLIB=$LIBBASE
 export HDF5=$LIBBASE
 export JASPER=$LIBBASE
 export PHDF5=$LIBBASE
 ```
 
-**FIrts, whe need MPI libraries**
+**First, whe need MPI libraries to compile all**
 ```console
 $ sudo yum install openmpi-devel
-$ module load mpi
-$ mpifort --version 
+$ tar xfz mpich.tar.gz
+$ gunzip -c mpich.tar.gz | tar xf -
+$ mkdir $HOME/mpich-install
+$ cd $HOME/mpich-install
+$ ./configure \-prefix=/home/you/mpich-install |& tee c.txt
+$ make 2>&1 | tee m.txt
+$ make install
+$ PATH=/home/you/mpich-install/bin:$PATH
+$ export PATH
+$ mpicc --version
+gcc (GCC) 8.2.1 20180905 (Red Hat 8.2.1-3)
 Copyright (C) 2018 Free Software Foundation, Inc.
 Esto es software libre; vea el código para las condiciones de copia.  NO hay
 garantía; ni siquiera para MERCANTIBILIDAD o IDONEIDAD PARA UN PROPÓSITO EN
 PARTICULAR
 ```
-
-**And also curl libs***
-
-git clone https://github.com/curl/curl.git
-cd curl
-./buildconf
-./configure --prefix=${LIBBASE}
-make
-make install
-cd ..
-
 
 **It is important to note that these libraries must all be installed with the same compilers as will be used to install WRFV4 and WPS. So wee need to set a few enviroment variabñles to tell the conpires which compilers and flags use**
 
@@ -51,13 +145,6 @@ export MPI_FC=mpifort
 export MPI_F77=mpif77
 export MPI_CC=mpicc
 export MPI_CXX=mpicc
-
-export LDFLAGS="-L${LIBBASE}/lib -fopenmp -fPIC"
-export CFLAGS="-I$LIBBASE/include -L$LIBBASE/lib -O3 -fopenmp -fPIC"
-export CPPFLAGS=$CFLAGS
-export CXXFLAGS=$CFLAGS
-export FFFLAGS=$CFLAGS
-export FCFLAGS=$CFLAGS
 ```
 
 **ZLib install**
@@ -97,13 +184,6 @@ tar xzvf v4.7.2.tar.gz
 cd netcdf-c-4.7.2
 export CC=$MPI_CC
 
-export LDFLAGS="-L${LIBBASE}/lib -fopenmp -fPIC"
-export CFLAGS="-I$LIBBASE/include -L$LIBBASE/lib -O3 -fopenmp -fPIC"
-export CPPFLAGS=$CFLAGS
-export CXXFLAGS=$CFLAGS
-export FFLAGS=$CFLAGS
-export FCFLAGS=$CFLAGS
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${LIBBASE}/lib
 
 ./configure --prefix=$NCDIR --disable-shared --enable-parallel-tests --enable-netcdf4 --disable-filter-testing --disable-dap
 make check
@@ -115,19 +195,17 @@ cd ..
 **netCDF (Fortran interface library)**
 
 ```console
-wget -nc https://github.com/Unidata/netcdf-fortran/archive/v4.5.2.tar.gz
-tar xzvf v4.5.2.tar.gz
-cd netcdf-fortran-4.5.2
-export FC=$MPI_FC
-export F77=$MPI_F77
-export LIBS="-lnetcdf ${LIBS}"
-./configure --prefix=${LIBBASE} --enable-parallel-tests --disable-shared
-make check
-make install
-cd ..
+$ wget -nc https://github.com/Unidata/netcdf-fortran/archive/v4.5.2.tar.gz
+$ tar xzvf v4.5.2.tar.gz
+$ cd netcdf-fortran-4.5.2
+$ export FC=$MPI_FC
+$ export F77=$MPI_F77
+$ CPPFLAGS="-I${NETCDF}/include" LDFLAGS="-L${NETCDF}/lib" LD_LIBRARY_PATH=${NETCDF}/lib LIBS="-lnetcdf -lhdf5_hl -lhdf5 -lz" ./configure --enable-parallel-tests --enable-shared --prefix=${NETCDF}
+$ make check
+$ make install
+$ cd ..
 ```
 
-CPPFLAGS="-I${NCDIR}/include" LDFLAGS="-L${NCDIR}/lib" LD_LIBRARY_PATH=${NCDIR}/lib LIBS="-lnetcdf -lhdf5_hl -lhdf5 -lz" ./configure --disable-shared  --enable-parallel-tests --prefix=${NCDIR}
 
 **JASPER**
 Configuring JasPer: This is a compression library necessary for compiling WPS (specifically ungrib) with GRIB2 capability.
@@ -166,6 +244,7 @@ Move to `TESTS` directory, download the tar file that contans these tests and un
 $ cd ../TESTS
 $ wget http://www2.mmm.ucar.edu/wrf/OnLineTutorial/compile_tutorial/tar_files/Fortran_C_NETCDF_MPI_tests.tar
 $ tar -xvf Fortran_C_NETCDF_MPI_tests.tar
+$ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${LIBBASE}/lib
 ```
 
 There are 2 tests.
