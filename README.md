@@ -311,25 +311,6 @@ You will see various options. Choose the option that lists the compiler you are 
 ```console
 checking for perl5... no
 checking for perl... found /usr/bin/perl (perl)
- 
-*****************************************************************************
-No environment variable NETCDF set.
-Stopping
-*****************************************************************************
- 
-(base) [wrf@Tesla WRF-4.1.2]$ echo $LIB
-$LIBBASE  $LIBSRC   
-(base) [wrf@Tesla WRF-4.1.2]$ echo $LIB
-$LIBBASE  $LIBSRC   
-(base) [wrf@Tesla WRF-4.1.2]$ echo $LIBBASE 
-/home/wrf/wrf_io
-(base) [wrf@Tesla WRF-4.1.2]$ export NETCDF=$LIBBASE
-(base) [wrf@Tesla WRF-4.1.2]$ export PHDF5=$LIBBASE
-(base) [wrf@Tesla WRF-4.1.2]$ export JASPERLIB=$LIBBASE/lib
-(base) [wrf@Tesla WRF-4.1.2]$ export JASPERINC=$LIBBASE/include
-(base) [wrf@Tesla WRF-4.1.2]$ ./configure 
-checking for perl5... no
-checking for perl... found /usr/bin/perl (perl)
 Will use NETCDF in dir: /home/wrf/wrf_io
 HDF5 not set in environment. Will configure WRF for use without.
 Will use PHDF5 in dir: /home/wrf/wrf_io
