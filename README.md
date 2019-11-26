@@ -179,17 +179,13 @@ $ cd ..
 
 **netCDF (C library)**
 ```console
-wget -nc https://github.com/Unidata/netcdf-c/archive/v4.7.2.tar.gz
-tar xzvf v4.7.2.tar.gz
-cd netcdf-c-4.7.2
-export CC=$MPI_CC
-
-
-./configure --prefix=$NCDIR --disable-shared --enable-parallel-tests --enable-netcdf4 --disable-filter-testing --disable-dap
-make check
-make install
-export NETCDF=${LIBBASE}
-cd ..
+$ wget -nc https://github.com/Unidata/netcdf-c/archive/v4.7.2.tar.gz
+$ tar xzvf v4.7.2.tar.gz
+$ cd netcdf-c-4.7.2
+$ CC=mpicc CPPFLAGS="-I${HDF5}/include" LDFLAGS="-L${HDF5}/lib" ./configure --enable-shared --enable-parallel-tests --enable-netcdf4 --disable-filter-testing --disable-dap --prefix=${NETCDF}
+$ make check
+$ make install
+$ cd ..
 ```
 
 **netCDF (Fortran interface library)**
@@ -212,27 +208,27 @@ Configuring JasPer: This is a compression library necessary for compiling WPS (s
 Assuming all the **export** commands from the NetCDF install are already set, you can move on to the commands to install jasper.
 
 ```console
-wget -nc http://www2.mmm.ucar.edu/wrf/OnLineTutorial/compile_tutorial/tar_files/jasper-1.900.1.tar.gz
-tar xvzf jasper-1.900.1.tar.gz
-cd jasper-1.900.1
-./configure --prefix=$LIBBASE
-make
-make install
-export JASPERLIB=$LIBBASE/lib
-export JASPERLIB=$LIBBASE/include
+$ wget -nc http://www2.mmm.ucar.edu/wrf/OnLineTutorial/compile_tutorial/tar_files/jasper-1.900.1.tar.gz
+$ tar xvzf jasper-1.900.1.tar.gz
+$ cd jasper-1.900.1
+$ ./configure --prefix=$LIBBASE
+$ make
+$ make install
+$ export JASPERLIB=$LIBBASE/lib
+$ export JASPERLIB=$LIBBASE/include
 ```
 
 **LIBPNG**
 This is a compression library necessary for compiling WPS (specifically ungrib) with GRIB2 capability.
 Assuming all the **export** commands from the NetCDF install are already set, you can move on to the commands to install libpng.
 ```console
-wget -nc http://www2.mmm.ucar.edu/wrf/OnLineTutorial/compile_tutorial/tar_files/libpng-1.2.50.tar.gz
-tar xvzf libpng-1.2.50.tar.gz 
-cd libpng-1.2.50/
-./configure --prefix=$LIBBASEm
-make
-make install
-cd ..
+$ wget -nc http://www2.mmm.ucar.edu/wrf/OnLineTutorial/compile_tutorial/tar_files/libpng-1.2.50.tar.gz
+$ tar xvzf libpng-1.2.50.tar.gz 
+$ cd libpng-1.2.50/
+$ ./configure --prefix=$LIBBASEm
+$ make
+$ make install
+$ cd ..
 ```
 
 ## Libraries compatibility tests
