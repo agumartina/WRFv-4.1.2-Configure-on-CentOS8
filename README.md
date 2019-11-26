@@ -1,4 +1,4 @@
-# WRFv-4.1.2-Configure-on-CentOS8
+# WRFv-4.1.2 Configure on CentOS 8
 Configuration of WRF 4.1 on CenOS
 These are some installation notes taken in the process of installing WRF version 4.1.2 on a computer with CentOS 8.
 
@@ -7,7 +7,7 @@ These are some installation notes taken in the process of installing WRF version
 
 
 ```console
-$sudo yum groupinstall 'Development Tools'
+$ sudo yum groupinstall 'Development Tools'
 $ sudo yum install csh gfortran m4
 ```
 
