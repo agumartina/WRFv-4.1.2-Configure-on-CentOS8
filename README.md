@@ -531,3 +531,23 @@ geogrid.exe
 metgrid.exe
 ungrib.exe
 ```
+
+## Static geography data
+
+The WRF modeling system is able to create idealized simulations, though most users are interested in the real-data cases. To initiate a real-data case, the domain's physical location on the globe and the static information for that location must be created. This requires a data set that includes such fields as topography and land use categories. Move to your HOME directory, download the file and unpack it.
+```console
+$ cd $HOME
+$ wget http://www2.mmm.ucar.edu/wrf/src/wps_files/geog_high_res_mandatory.tar.gz
+$ tar -xvf geog_high_res_mandatory.tar.gz
+
+```
+The directory infomation is given to the geogrid program in the namelist.wps file in the &geogrid section. The data expands to approximately 29 GB. This data allows a user to run the geogrid.exe program.
+
+```console
+$ cd WPS
+$ nano WRFoperativo/templates/namelists/namelist.wps
+
+(...)
+geog_data_path = '{path_to_dir}/Build_WRF/WPS_GEOG'
+(...)
+```
