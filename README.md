@@ -117,6 +117,7 @@ export PHDF5=$LIBBASE
 **First, whe need MPI libraries to compile all**
 ```console
 $ sudo yum install openmpi-devel
+$ wget -nc https://www2.mmm.ucar.edu/wrf/OnLineTutorial/compile_tutorial/tar_files/mpich-3.0.4.tar.gz
 $ tar xfz mpich.tar.gz
 $ gunzip -c mpich.tar.gz | tar xf -
 $ mkdir $HOME/mpich-install
