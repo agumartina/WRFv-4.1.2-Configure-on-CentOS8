@@ -190,7 +190,7 @@ $ cd ..
 ```
 
 **netCDF (Fortran interface library)**
-
+For problems [here](https://software.intel.com/content/www/us/en/develop/articles/performance-tools-for-software-developers-building-netcdf-with-the-intel-compilers.html)
 ```console
 $ wget -nc https://github.com/Unidata/netcdf-fortran/archive/v4.5.2.tar.gz
 $ tar xzvf v4.5.2.tar.gz
