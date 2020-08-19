@@ -197,7 +197,7 @@ $ tar xzvf v4.5.2.tar.gz
 $ cd netcdf-fortran-4.5.2
 $ export FC=$MPI_FC
 $ export F77=$MPI_F77
-$ CPPFLAGS="-I${NETCDF}/include" LDFLAGS="-L${NETCDF}/lib" LD_LIBRARY_PATH=${NETCDF}/lib LIBS="-lnetcdf -lhdf5_hl -lhdf5 -lz" ./configure --enable-parallel-tests --enable-shared --prefix=${NETCDF}
+$ CPPFLAGS="-I${NETCDF}/include" LDFLAGS="-L${NETCDF}/lib" LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${NETCDF}/lib LIBS="-lnetcdf -lhdf5_hl -lhdf5 -lz" ./configure --enable-parallel-tests --enable-shared --prefix=${NETCDF}
 $ make check
 $ make install
 $ cd ..
